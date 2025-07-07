@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, Tray, Menu, dialog, clipboard, protocol, net } from 'electron';
+import { app, BrowserWindow, ipcMain, Tray, Menu, dialog, clipboard, protocol, net, shell } from 'electron';
 import path from 'node:path';
 import fs from 'fs/promises';
 import { v4 as uuid } from 'uuid';
@@ -114,7 +114,6 @@ const createNoteWindow = (note) => {
     minWidth: 250,
     minHeight: 250,
     frame: false,
-    transparent: true,
     webPreferences: {
       preload: path.join(__dirname, '../preload/preload.js'),
     },
@@ -142,6 +141,13 @@ const createNoteWindow = (note) => {
     updateTrayMenu();
     saveNotes();
   });
+
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith('http')) {
+      shell.openExternal(url);
+    }
+    return { action: 'deny' };
+  })
   
   if (process.env.VITE_DEV_SERVER_URL) {
     win.loadURL(`${process.env.VITE_DEV_SERVER_URL}#${note.id}`);

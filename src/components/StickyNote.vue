@@ -45,8 +45,36 @@
 
 <script setup lang="ts">
 import { ref, computed, nextTick, onMounted } from 'vue';
-import { marked } from 'marked';
+import { marked, type Tokens } from 'marked';
 import { useNotesStore } from '../store/notesStore';
+
+const renderer = {
+  link({ href, title, text }: Tokens.Link): string {
+    const localLink = href.startsWith(
+      `${location.protocol}//${location.hostname}`
+    );
+    if (location.protocol.startsWith("http")) {
+      // to avoid title="null"
+      if (title === null || title === undefined) {
+        return localLink
+          ? `<a href="${href}">${text}</a>`
+          : `<a target="_blank" rel="noreferrer noopener" href="${href}">${text}</a>`;
+      }
+
+      return localLink
+        ? `<a href="${href}" title="${title}">${text}</a>`
+        : `<a target="_blank" rel="noreferrer noopener" href="${href}" title="${title}">${text}</a>`;
+    } else {
+      if (title === null || title === undefined) {
+        return `<a href="${href}">${text}</a>`
+      }
+
+      return `<a href="${href}" title="${title}">${text}</a>`;
+    }
+  },
+};
+
+marked.use({ renderer });
 
 // --- Props and Store Initialization ---
 const props = defineProps<{
