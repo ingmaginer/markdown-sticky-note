@@ -210,14 +210,9 @@ onMounted(() => {
 
 <style scoped>
 .sticky-note-wrapper {
-  /* ✨ display를 flex에서 grid로 변경합니다. */
-  display: grid;
-  /* ✨ 헤더는 30px, 내용은 나머지 전체(auto)로 행을 나눕니다. */
-  grid-template-rows: 30px auto;
-  
-  height: 100vh;
+  height: 100%;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -239,16 +234,12 @@ onMounted(() => {
   width: 100%;
   height: -webkit-fill-available;
   display: flex;
-  /* flex-grow: 1; */
-  /* height: calc(100% - 30px); 헤더 높이 제외 */
 }
 .editor,
 .preview {
   width: 100%;
-  /* height: 100%; */
   padding: 10px;
   overflow-y: auto;
-  line-height: 1.5;
   text-align: justify;
   background-color: transparent;
 }
@@ -256,7 +247,6 @@ onMounted(() => {
   font: inherit;
   border: none;
   resize: none;
-  /* border-right: 1px dashed #ccc; */
 }
 .editor:focus {
   outline: none;
@@ -305,7 +295,6 @@ onMounted(() => {
   /* ✨ Electron에서 드래그 가능 영역으로 설정 */
   -webkit-app-region: drag;
   display: flex;
-  /* justify-content: flex-end; */
   align-items: center;
   padding: 0 5px;
 }

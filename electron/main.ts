@@ -251,7 +251,10 @@ app.whenReady().then(async () => {
     if (note.isOpen) createNoteWindow(note);
   });
   
-  tray = new Tray(path.join(__dirname, '../renderer/icon.png'));
+  const iconPath = app.isPackaged
+        ? path.join(__dirname, '../renderer/icon.png') // 프로덕션 경로
+        : path.join(__dirname, `../../public/icon.png`);     // 개발 경로
+  tray = new Tray(iconPath);
   tray.setToolTip('Markdown Sticky Notes');
   updateTrayMenu();
 });
