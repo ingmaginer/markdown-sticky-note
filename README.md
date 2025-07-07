@@ -47,7 +47,7 @@ Vue3, Vite, Electron을 활용하여 만든 데스크톱 마크다운 스티키 
 
 ```bash
 # 1. 저장소를 클론합니다.
-git clone [https://github.com/ingmaginer/markdown-sticky-notes.git](https://github.com/ingmaginer/markdown-sticky-notes.git)
+git clone https://github.com/ingmaginer/markdown-sticky-notes.git
 
 # 2. 프로젝트 폴더로 이동합니다.
 cd markdown-sticky-notes
