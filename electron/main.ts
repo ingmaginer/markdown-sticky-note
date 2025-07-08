@@ -49,7 +49,9 @@ function createNewNoteData() {
   const newNote = {
     id: uuid(),
     title: `새 노트 ${loadedNotes.length + 1}`,
+    // isOpen, isWinClose 사용자 지시/프로그램 종료를 구분하기 위한 장치
     isOpen: true,
+    isWinClose: false,
     content: '# 환영합니다! 🎉\n\n이곳에 마크다운으로 메모를 작성해 보세요.',
     position: { x: Math.floor(Math.random() * 200) + 50, y: Math.floor(Math.random() * 200) + 50 },
     size: { width: 275, height: 350 },
@@ -68,7 +70,7 @@ function createNewNoteData() {
 /** 트레이 메뉴를 생성하거나 업데이트합니다. */
 const updateTrayMenu = () => {
   const loginSettings = app.getLoginItemSettings();
-  const closedNotes = loadedNotes.filter(note => !note.isOpen);
+  const closedNotes = loadedNotes.filter(note => !note.isOpen || note.isWinClose);
 
   const template: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] = [
     { label: '새 노트', click: () => ipcMain.emit('request-new-note') },
@@ -91,6 +93,7 @@ const updateTrayMenu = () => {
           const targetNote = loadedNotes.find(n => n.id === note.id);
           if (targetNote) {
             targetNote.isOpen = true;
+            targetNote.isWinClose = false;
             createNoteWindow(targetNote);
             updateTrayMenu();
             saveNotes();
@@ -115,6 +118,7 @@ const createNoteWindow = (note) => {
     minHeight: 250,
     frame: false,
     transparent: true,
+    backgroundColor: '#00000000',
     webPreferences: {
       preload: path.join(__dirname, '../preload/preload.js'),
     },
@@ -138,7 +142,7 @@ const createNoteWindow = (note) => {
   
   win.on('closed', () => {
     const targetNote = loadedNotes.find(n => n.id === note.id);
-    if(targetNote) targetNote.isOpen = false;
+    if(targetNote) targetNote.isWinClose = true;
     updateTrayMenu();
     saveNotes();
   });
@@ -223,6 +227,7 @@ async function handleImportNotes() {
         importedNotes.forEach(note => {
           note.id = uuid();
           note.position = { x: Math.floor(Math.random() * 200) + 50, y: Math.floor(Math.random() * 200) + 50 };
+          note.isWinClose = !note.isOpen;
           loadedNotes.push(note);
           if (note.isOpen) createNoteWindow(note);
           broadcast('note-updated', note);
@@ -339,8 +344,12 @@ ipcMain.on('save-image-from-clipboard', async (event) => {
   event.sender.send('image-pasted', assetPath);
 });
 
-ipcMain.on('close-window', (event) => {
+ipcMain.on('close-window', (event, noteId) => {
   const win = BrowserWindow.fromWebContents(event.sender);
+  const targetNote = loadedNotes.find(n => n.id === noteId);
+  targetNote.isOpen = false;
+  updateTrayMenu();
+  saveNotes();
   if (win) {
     win.close();
   }

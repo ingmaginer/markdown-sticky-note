@@ -33,7 +33,7 @@ declare global {
       recreateAllWindows: (notes: Note[]) => void;
 
       /** 메인 프로세스에 창 종료 신호를 보냅니다. */
-      closeWindow: () => void,
+      closeWindow: (noteId: string) => void,
 
       /** 메인 프로세스에 '항상 위에 표시' 상태를 요청합니다. */
       togglePinStatus: (isPinned: boolean) => void;

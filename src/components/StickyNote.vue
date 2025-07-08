@@ -185,7 +185,7 @@ const handleNewNote = () => {
 const handleCloseNote = async () => {
   notesStore.updateNote({ id: props.noteId, isOpen: false });
   await nextTick();
-  window.electronAPI.closeWindow();
+  window.electronAPI.closeWindow(props.noteId);
 };
 
 const handleDeleteNote = () => {

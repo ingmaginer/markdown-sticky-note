@@ -15,7 +15,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   requestNewNote: () => ipcRenderer.send('request-new-note'),
   removeNote: (noteId: string) => ipcRenderer.send('remove-note', noteId),
   updateNote: (partialNote: Partial<Note> & { id: string }) => ipcRenderer.send('update-note', partialNote),
-  closeWindow: () => ipcRenderer.send('close-window'),
+  closeWindow: (noteId: string) => ipcRenderer.send('close-window', noteId),
   togglePinStatus: (isPinned: boolean) => ipcRenderer.send('toggle-pin-status', isPinned),
   setOpacity: (opacity: number) => ipcRenderer.send('set-opacity', opacity),
 

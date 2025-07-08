@@ -5,6 +5,7 @@ export interface Note {
   id: string;
   title: string;
   isOpen: boolean;
+  isWinClose: boolean;
   content: string;
   position: { x: number; y: number };
   size: { width: number; height: number };
