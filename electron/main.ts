@@ -114,6 +114,7 @@ const createNoteWindow = (note) => {
     minWidth: 250,
     minHeight: 250,
     frame: false,
+    transparent: true,
     webPreferences: {
       preload: path.join(__dirname, '../preload/preload.js'),
     },
@@ -140,6 +141,16 @@ const createNoteWindow = (note) => {
     if(targetNote) targetNote.isOpen = false;
     updateTrayMenu();
     saveNotes();
+  });
+
+  // electron issue 윈도우가 포커스를 잃으면 타이틀바가 표시되는 현상 해결 방법(임시)
+  // https://github.com/electron/electron/issues/39959#issuecomment-3037354423
+  win.on("blur", () => {
+    win.setBackgroundColor("#00000000");
+  });
+
+  win.on("focus", () => {
+    win.setBackgroundColor("#00000000");
   });
 
   win.webContents.setWindowOpenHandler(({ url }) => {
